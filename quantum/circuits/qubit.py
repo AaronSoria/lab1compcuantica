@@ -2,6 +2,7 @@ from __future__ import annotations
 import numpy as np
 from typing import Callable
 
+
 QuantumOperation = Callable[[np.ndarray], np.ndarray]
 class Qubit:
     id = -1
@@ -15,12 +16,27 @@ class Qubit:
         self.state = state
         self.applying_operation = False
 
+    def set_state(self, state: np.ndarray) -> None:
+        self.validate_state(state=state)       
+        self.state = state
+
+    def validate_state(self, state) -> None:
+        # Validación: vector de 2 dimensiones
+        if state.shape != (2,):
+            raise ValueError("El estado debe ser un vector de 2 dimensiones.")
+
+        # Validación de normalización
+        if not np.isclose(np.linalg.norm(state), 1.0, atol=1e-8):
+            raise ValueError("El estado no está normalizado.")
+
+
     def apply_operation(self, operation: QuantumOperation) -> None:
         if self.applying_operation:
             return
         
         self.applying_operation = True
-        self.state = operation(self.state)
+        new_state = operation(self.state)
+        self.set_state(state=new_state)
         if self.is_entangled():
             self.entanglement_qubit.apply_operation(operation=operation)
             self.applying_operation = False

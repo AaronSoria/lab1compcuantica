@@ -20,6 +20,9 @@ class Circuit:
     def apply_operation(self, id:int, operation: QuantumOperation):
         self.qubit_array[id].apply_operation(operation)
 
+    def set_state(self, id:int, state: np.ndarray) -> None:
+        self.qubit_array[id].state = state
+
     def mesure(self, id):
         qubit = self.qubit_array[id]
         qubit.collapse()
