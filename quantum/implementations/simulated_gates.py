@@ -28,7 +28,23 @@ class SimulatedGates(IQuantumGates):
     def S(self, state: np.ndarray) -> np.ndarray:
         s = np.array([[1.0, 0.0], [0.0, 1.0j]], dtype=complex)
         return np.dot(s, state)
+    
+    def S_adjoin(self, state: np.ndarray) -> np.ndarray:
+        s_dag = np.array([[1.0, 0.0], [0.0, -1.0j]], dtype=complex)
+        return np.dot(s_dag, state)
+    
+    def T(self, state: np.ndarray) -> np.ndarray:
+        t = np.array([[1.0, 0.0], [0.0, np.exp(1j * np.pi / 4)]], dtype=complex)
+        return np.dot(t, state)
+    
+    def T_adjoint(self, state: np.ndarray) -> np.ndarray:
+        t_dag = np.array([[1.0, 0.0], [0.0, np.exp(-1j * np.pi / 4)]], dtype=complex)
+        return np.dot(t_dag, state)
 
     def V(self, state: np.ndarray) -> np.ndarray:
         v = np.array([[1+1j, 1-1j], [1-1j, 1+1j]], dtype=complex) * 0.5
         return np.dot(v, state)
+    
+    def V_adjoint(self, state: np.ndarray) -> np.ndarray:
+        v_dag = np.array([[1-1j, 1+1j], [1+1j, 1-1j]], dtype=complex) * 0.5
+        return np.dot(v_dag, state)

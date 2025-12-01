@@ -39,7 +39,8 @@ class Qubit:
         self.set_state(state=new_state)
         if self.is_entangled():
             self.entanglement_qubit.apply_operation(operation=operation)
-            self.applying_operation = False
+        
+        self.applying_operation = False
 
 
     def entanglement(self, entanglement_qubit: Qubit) -> None:

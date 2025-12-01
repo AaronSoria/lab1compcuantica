@@ -3,17 +3,25 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 def plot_qubit_on_bloch_sphere(qubit_state: np.ndarray):
-    norm = np.sqrt(np.abs(qubit_state[0])**2 + np.abs(qubit_state[1])**2)
+    # Normalizar
+    norm = np.linalg.norm(qubit_state)
+    if norm == 0:
+        raise ValueError("El estado del cúbit no puede ser el vector cero.")
     alpha = qubit_state[0] / norm
     beta = qubit_state[1] / norm
-    
+
     theta = 2 * np.arccos(np.abs(alpha))
-    
-    if np.abs(beta) > 1e-10:
-        phi = np.angle(beta / np.abs(beta)) - np.angle(alpha / np.abs(alpha))
-    else:
+
+    # Calcular fase relativa robustamente
+    if np.abs(alpha) < 1e-12 and np.abs(beta) < 1e-12:
+        phi = 0  # No debería pasar nunca si el estado estaba normalizado
+    elif np.abs(beta) < 1e-12:
         phi = 0
-    
+    elif np.abs(alpha) < 1e-12:
+        phi = 0
+    else:
+        phi = np.angle(beta) - np.angle(alpha)
+
     phi = phi % (2 * np.pi)
     
     # create figure
@@ -62,7 +70,7 @@ def plot_qubit_on_bloch_sphere(qubit_state: np.ndarray):
     # draw vector
     ax.quiver(0, 0, 0, x_vec, y_vec, z_vec, 
               color='purple', linewidth=3, arrow_length_ratio=0.1, 
-              label=f'|ψ⟩ = {alpha.real:.2f}|0⟩ + {beta.real:.2f}|1⟩')
+              label=f'|ψ⟩ = ({alpha.real:.3f}{alpha.imag:+.3f}i)|0⟩ + ({beta.real:.3f}{beta.imag:+.3f}i)|1⟩')
     
     # Punto en la superficie
     ax.scatter([x_vec], [y_vec], [z_vec], color='purple', s=100)

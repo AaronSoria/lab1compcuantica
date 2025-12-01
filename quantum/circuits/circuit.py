@@ -21,7 +21,7 @@ class Circuit:
         self.qubit_array[id].apply_operation(operation)
 
     def set_state(self, id:int, state: np.ndarray) -> None:
-        self.qubit_array[id].state = state
+        self.qubit_array[id].set_state(state)
 
     def mesure(self, id):
         qubit = self.qubit_array[id]
